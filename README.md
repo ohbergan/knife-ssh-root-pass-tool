@@ -28,21 +28,36 @@ To display help and see all available options, run:
 
 ### Options
 
-- `-p` Specify the password in clear text (will be hashed).
-- `-h` Specify an existing password hash to use.
+- `-p` Specify the password in clear text. This will be used to verify that the changed password works so it is needed even if you supply a hash.
+- `-h` Specify the hash to use. This ensures that the hash will be the same on all hosts.
 - `-o` Specify an output file to save the results.
 - `-l` List the machines without changing passwords.
 - `--hosts` Specify a list of hosts separated by space.
 - `--help` Display this help message.
 
+The password on the remote host will be set by sending the hashed
+password, not the plaintext password.
+
+This tool will use sha-512 hashes.  As far as I have been able to find
+out on the internet this is compatible with both RHEL/CentOS 6 which
+was released in 2011 as well as Debian 6 ("squeeze") released in 2014.
+
 ## Examples
+
+- Generate a sha-512 hash, this is what the tool would generate as well:
+  ```bash
+  $ openssl passwd -6
+  Password:
+  Verifying - Password:
+  $6$5q...
+  ```
 - List all CentOS machines without changing passwords and save the results to a file:
   ```bash
   ./update-root-pass.sh -l -o results.txt 'platform:centos'
   ```
 - Change the password on all hosts specified in the list:
   ```bash
-  ./update-root-pass.sh -p 'myPassword123' --hosts 'host1 host2'
+  ./update-root-pass.sh -p 'myPassword123' --hosts 'fqdn1 fqdn2'
   ```
 - Change the password on all nodes in the Chef server matching the search query:
   ```bash

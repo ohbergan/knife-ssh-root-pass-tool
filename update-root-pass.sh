@@ -105,7 +105,7 @@ if [ -n "$PASSWORD" ] && [ -z "$PASSWORD_HASH" ]; then
 fi
 
 # Encode PASSWORD_HASH to base64 (or it will most likely mess things up)
-ENCODED_PASSWORD_HASH=$(echo -n "$PASSWORD_HASH" | base64)
+ENCODED_CHPASSWD_IN=$(echo -n "root:$PASSWORD_HASH" | base64 -w0)
 
 main() {
   # Use knife to get a list of nodes based on the search query
@@ -140,8 +140,8 @@ main() {
       echo "- Updating password for root on $host"
 
       # Update the password using knife ssh
-      knife ssh "name:$host" "echo root:\$(echo $ENCODED_PASSWORD_HASH | base64 --decode) | sudo /usr/sbin/chpasswd -e" -y
-      echo "  - Password changed"
+      knife ssh "name:$host" "echo $ENCODED_CHPASSWD_IN | base64 --decode | sudo /usr/sbin/chpasswd -e" -y
+      echo "  - Sent new password"
       echo "  - Verifying password change"
       
       # Verify the password change by attempting to SSH into the server using sshpass

@@ -28,21 +28,29 @@ To display help and see all available options, run:
 
 ### Options
 
-- `-p` Specify the password in clear text (will be hashed).
-- `-h` Specify an existing password hash to use.
+- `-p` Specify the password in clear text (will be hashed unless you specify the hash). This will be used to verify that the changed password will work.
+- `-h` Specify the hash to use.
 - `-o` Specify an output file to save the results.
 - `-l` List the machines without changing passwords.
 - `--hosts` Specify a list of hosts separated by space.
 - `--help` Display this help message.
 
 ## Examples
+
+- Generate a sha-512 hash, this is what the tool would generate as well:
+  ```bash
+  $ openssl passwd -6
+  Password:
+  Verifying - Password:
+  $6$5q...
+  ```
 - List all CentOS machines without changing passwords and save the results to a file:
   ```bash
   ./update-root-pass.sh -l -o results.txt 'platform:centos'
   ```
 - Change the password on all hosts specified in the list:
   ```bash
-  ./update-root-pass.sh -p 'myPassword123' --hosts 'host1 host2'
+  ./update-root-pass.sh -p 'myPassword123' --hosts 'fqdn1 fqdn2'
   ```
 - Change the password on all nodes in the Chef server matching the search query:
   ```bash

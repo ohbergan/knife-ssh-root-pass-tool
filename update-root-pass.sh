@@ -141,7 +141,17 @@ main() {
 
       # Update the password using knife ssh
       knife ssh "name:$host" "echo $ENCODED_CHPASSWD_IN | base64 --decode | sudo /usr/sbin/chpasswd -e" -y
-      echo "  - Sent new password"
+      S=$?
+      case $S in
+          0)  echo "  - Sent new password" ;;
+          10) echo "  - Host not found (did not match name registered in Chef?)"
+              FAILED_HOSTS+=("$host")
+              continue ;;
+          *)  echo "  - Failed"
+              FAILED_HOSTS+=("$host")
+              continue ;;
+      esac
+
       echo "  - Verifying password change"
       
       # Verify the password change by attempting to SSH into the server using sshpass

@@ -28,12 +28,19 @@ To display help and see all available options, run:
 
 ### Options
 
-- `-p` Specify the password in clear text (will be hashed unless you specify the hash). This will be used to verify that the changed password will work.
-- `-h` Specify the hash to use.
+- `-p` Specify the password in clear text. This will be used to verify that the changed password works so it is needed even if you supply a hash.
+- `-h` Specify the hash to use. This ensures that the hash will be the same on all hosts.
 - `-o` Specify an output file to save the results.
 - `-l` List the machines without changing passwords.
 - `--hosts` Specify a list of hosts separated by space.
 - `--help` Display this help message.
+
+The password on the remote host will be set by sending the hashed
+password, not the plaintext password.
+
+This tool will use sha-512 hashes.  As far as I have been able to find
+out on the internet this is compatible with both RHEL/CentOS 6 which
+was released in 2011 as well as Debian 6 ("squeeze") released in 2014.
 
 ## Examples
 
